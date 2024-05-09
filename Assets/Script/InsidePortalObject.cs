@@ -23,7 +23,7 @@ namespace Prototype
             ShowOnlyInPortal();
         }
 
-        void SetMaterials(bool fullRender)
+        public void SetMaterials(bool fullRender)
         {
             var stencilTest = fullRender ? CompareFunction.Equal : CompareFunction.NotEqual;
 
