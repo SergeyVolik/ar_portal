@@ -14,7 +14,7 @@ namespace Prototype
 
         static List<ARRaycastHit> Hits = new List<ARRaycastHit>();
 
-        private void Awake()
+        private void Start()
         {
             m_ARRaycastManager = GetComponent<ARRaycastManager>();
             SceneObject.SetActive(false);
@@ -39,7 +39,7 @@ namespace Prototype
 
         void LookAtPlayer(Transform scene)
         {
-            var LookDirection = Camera.main.transform.position - scene.position;
+            var LookDirection = scene.position - Camera.main.transform.position;
             LookDirection.y = 0;
             scene.rotation = Quaternion.LookRotation(LookDirection);
         }

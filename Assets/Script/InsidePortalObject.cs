@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -5,34 +6,40 @@ namespace Prototype
 {
     public class InsidePortalObject : MonoBehaviour
     {
-        private Renderer[] Rendrers
+        List<Material> m_Materials = new List<Material>();
+        private bool m_Inited;
+        private static readonly int StencimComp = Shader.PropertyToID("_StencilComp");
+
+        private void Awake()
+        {         
+            ShowOnlyInPortal();
+            Init();
+        }
+
+        void Init()
         {
-            get
+            if (m_Inited)
+                return;
+
+            m_Inited = true;
+            var rendrers = GetComponentsInChildren<Renderer>();
+
+            foreach (var item in rendrers)
             {
-                if (m_Rendrers == null || m_Rendrers.Length == 0)
-                    m_Rendrers = GetComponentsInChildren<Renderer>();
-                return m_Rendrers;
+                m_Materials.AddRange(item.sharedMaterials);
             }
         }
 
-        private Renderer[] m_Rendrers;
-
-        private void Awake()
-        {
-            m_Rendrers = null;
-            ShowOnlyInPortal();
-        }
 
         public void SetMaterials(bool fullRender)
         {
+            Init();
+
             var stencilTest = fullRender ? CompareFunction.Equal : CompareFunction.NotEqual;
 
-            foreach (var item in Rendrers)
+            foreach (var material in m_Materials)
             {
-                foreach (var material in item.sharedMaterials)
-                {
-                    material.SetInt("_StencilComp", (int)stencilTest);
-                }
+                material.SetInt(StencimComp, (int)stencilTest);
             }
         }
 
