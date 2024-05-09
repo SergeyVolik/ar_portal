@@ -1,52 +1,47 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-public class PlaceOnPlane : MonoBehaviour
+namespace Prototype
 {
-    ARRaycastManager ARRaycastManager;
-    private Vector2 touchPosition;
-
-    public GameObject ScenePrefab;
-
-    static List<ARRaycastHit> Hits = new List<ARRaycastHit>();
-
-    private void Awake()
+    public class PlaceOnPlane : MonoBehaviour
     {
-        ARRaycastManager = GetComponent<ARRaycastManager>();
-        ScenePrefab.SetActive(false);
-    }
+        private ARRaycastManager m_ARRaycastManager;
+        private Vector2 m_TouchPosition;
 
-    // Start is called before the fist frame update
-    private void Start()
-    {
-        
-    }
+        public GameObject SceneObject;
 
-    // Update is called once per frame
-    private void Update()
-    {
-        if (Input.touchCount>0)
+        static List<ARRaycastHit> Hits = new List<ARRaycastHit>();
+
+        private void Awake()
         {
-            touchPosition = Input.GetTouch(0).position;
+            m_ARRaycastManager = GetComponent<ARRaycastManager>();
+            SceneObject.SetActive(false);
+        }
 
-            if (ARRaycastManager.Raycast(touchPosition, Hits, TrackableType.PlaneWithinPolygon))
+        private void Update()
+        {
+            if (Input.touchCount > 0)
             {
-                var hitPose = Hits[0].pose;
+                m_TouchPosition = Input.GetTouch(0).position;
 
-                ScenePrefab.SetActive(true);
-                ScenePrefab.transform.position = hitPose.position;
-                LookAtPlayer(ScenePrefab.transform);
+                if (m_ARRaycastManager.Raycast(m_TouchPosition, Hits, TrackableType.PlaneWithinPolygon))
+                {
+                    var hitPose = Hits[0].pose;
+
+                    SceneObject.SetActive(true);
+                    SceneObject.transform.position = hitPose.position;
+                    LookAtPlayer(SceneObject.transform);
+                }
             }
         }
-    }
 
-    void LookAtPlayer(Transform scene)
-    {
-        var LookDirection = Camera.main.transform.position - scene.position;
-        LookDirection.y = 0;
-        scene.rotation = Quaternion.LookRotation(LookDirection);
+        void LookAtPlayer(Transform scene)
+        {
+            var LookDirection = Camera.main.transform.position - scene.position;
+            LookDirection.y = 0;
+            scene.rotation = Quaternion.LookRotation(LookDirection);
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace Prototype
 
         void SetMaterials(bool fullRender)
         {
-            var stencilTest = fullRender ? CompareFunction.NotEqual : CompareFunction.Equal;
+            var stencilTest = fullRender ? CompareFunction.Equal : CompareFunction.NotEqual;
 
             foreach (var item in m_rendrers)
             {
